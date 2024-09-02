@@ -1,0 +1,84 @@
+--Meetings:
+
+- Veri çok küçük, her haftaya dair sadece 1 veri var. Tek seferde request atılabilir.
+- Meeting_key PK. Her yarışta bir artıyor. Son meeting_key Italian Grand Prix: 1244
+
+-- Sessions:
+
+- Her meeting'in içindeki sessionlar var. 
+- Bu sebeple meetings tablosu içindeki meeting_keylerin for döngüsü ile sırayla request atılabilir. 
+- Gerçekleşmeyen sessionlar yok. Örn: (Practice'ler yapılıyor ama daha Qualify'in yok ise henüz tabloda yer almıyor)
+
+
+-- Drivers:
+
+- Her session'daki tüm driverlar geliyor. Yani session başına yaklaşık 20 satır diyebiliriz.
+- Bu sebeple session tablosu ile gidip driver çekilebilir.
+
+-- Weather:
+
+- Her session'da her dakika veri geliyor. 
+- Yine sessions tablosunda her session için tek tek alınabilir. time out'a düşmez.
+- Tüm veriyi çekmek 93 saniye sürdü.
+- Shape: 20371, 10
+
+-- Race Control:
+
+- Her session'da bayraklar, güvenlik araçları vb tüm bilgiler geliyor. 
+- Her session_key'e özel veri alınabilir. Bu yüzden yine sessions tablosundan ilerliyoruz.
+- Tüm veriyi almak 89 saniye sürdü.
+- Shape: 8246, 10
+
+-- Pit:
+
+- Her session'da yarışçıların pit'e girdiği verileri gösteriyor. Eski sessionlara ait veriler yok gibi.
+- Her session_key'e özel veri alınabilir. Bu yüzden yine sessions tablosundan ilerliyoruz.
+- "Too many request"e düştüğü için time.sleep eklendi. Çünkü muhtemelen bazı session_key'ler de veri olmadığı için arka arkaya çok hızlı request attı.
+- Time sleep ile birlikte veri alma süresi: 125 saniye
+- Shape: 9198, 6
+
+-- Car Data:
+
+- En büyük tablolardan birisi.
+- Araç başı her session'da saniyelik 4-5 kere veri geliyor.
+- Hem session_key hem de driver_number kullanılacak. Bu yüzden Drivers tablosu kullanılacak.
+- Veri alım stepler:
+	- Sessions tablosundaki session_key, date_start ve date_end kullanıldı.
+	- Her session_key için date_start ile başlanarak 1 dakikada bir date_end'e kadar döngüye sokuldu.
+	- Her session_key ram'de ciddi yer tuttuğu için ve tamamlanması süre aldığı için her session_key döngüsü bitince veri .json olarak kaydedildi ve list temizlendi. Kaydedilen her json ile de alınan veri saklandı.
+	- NOT: session tablosundaki date_end'ten sonra da 5-10 dakika arasında verilerin aktığı tespit edildi ve bu sebeple ekstra bu veri de alınarak birleştirildi.
+
+-- Position:
+
+- Her session'da yarışçıların hangi anda sıralama değiştirdiğini gösteriyor. 
+- Her session_key'e özel veri alınabilir. Bu yüzden yine sessions tablosundan ilerliyoruz.
+- Shape: 140603, 5
+
+-- Stints:
+
+- Her session'da yarışçıların hangi lastikleri taktığını gösteriyor. 
+- Her session_key'e özel veri alınabilir. Bu yüzden yine sessions tablosundan ilerliyoruz.
+- "Too many request"e düştüğü için time.sleep eklendi. Çünkü muhtemelen bazı session_key'ler de veri olmadığı için arka arkaya çok hızlı request attı.
+- Time sleep ile birlikte veri alma süresi: 146 saniye
+- Shape: 14632, 8
+
+-- Team Radio:
+
+- Her session'da yarışçıların bazı radyo verilerine ait linkleri veriyor
+- Her session_key'e özel veri alınabilir. Bu yüzden yine sessions tablosundan ilerliyoruz.
+- "Too many request"e düştüğü için time.sleep eklendi. Çünkü muhtemelen bazı session_key'ler de veri olmadığı için arka arkaya çok hızlı request attı.
+- Time sleep ile birlikte veri alma süresi: 151
+- Shape: 12109, 5
+
+-- Intervals:
+
+- Lider ve bir öndeki kişiye olan süreyi veren tablo. Her 4 sn'de bir güncelleniyor.
+- Yoğun bir tablo olduğu için car_data ile aynı yöntemle alınacak. 
+- Fakat sessions tablosunda sadece session_name'i RACE olanlar kullanılacak.
+- Bazı race diye geçen session name'ler için bu değerler mevcut değil.
+- 428 saniyede data ingestion tamamlandı.
+- Shape: 848833, 6
+
+-- Locations: 
+
+- Araçların yarış içindeki konumlarını veren tablo

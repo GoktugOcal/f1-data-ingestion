@@ -1,0 +1,66 @@
+{
+    "Sessions": [
+        {
+            "Key": 5523,
+            "Type": "Practice",
+            "Number": 1,
+            "Name": "Practice 1",
+            "StartDate": "2019-10-11T10: 00: 00",
+            "EndDate": "2019-10-11T11: 30: 00",
+            "GmtOffset": "09: 00: 00",
+            "Path": "2019/2019-10-13_Japanese_Grand_Prix/2019-10-11_Practice_1/"
+        },
+        {
+            "Key": 5524,
+            "Type": "Practice",
+            "Number": 2,
+            "Name": "Practice 2",
+            "StartDate": "2019-10-11T14: 00: 00",
+            "EndDate": "2019-10-11T15: 30: 00",
+            "GmtOffset": "09: 00: 00",
+            "Path": "2019/2019-10-13_Japanese_Grand_Prix/2019-10-11_Practice_2/"
+        },
+        {
+            "Key": 5525,
+            "Type": "Practice",
+            "Number": 3,
+            "Name": "Practice 3",
+            "StartDate": "2019-10-12T12: 00: 00",
+            "EndDate": "2019-10-12T13: 00: 00",
+            "GmtOffset": "09: 00: 00"
+        },
+        {
+            "Key": 5526,
+            "Type": "Qualifying",
+            "Name": "Qualifying",
+            "StartDate": "2019-10-12T15: 00: 00",
+            "EndDate": "2019-10-12T16: 00: 00",
+            "GmtOffset": "09: 00: 00",
+            "Path": "2019/2019-10-13_Japanese_Grand_Prix/2019-10-12_Qualifying/"
+        },
+        {
+            "Key": 5522,
+            "Type": "Race",
+            "Name": "Race",
+            "StartDate": "2019-10-13T14: 10: 00",
+            "EndDate": "2019-10-13T16: 10: 00",
+            "GmtOffset": "09: 00: 00",
+            "Path": "2019/2019-10-13_Japanese_Grand_Prix/2019-10-13_Race/"
+        }
+    ],
+    "Key": 1016,
+    "Code": "JPN0306",
+    "Number": 17,
+    "Location": "Suzuka",
+    "OfficialName": "FORMULA 1 JAPANESE GRAND PRIX 2019",
+    "Name": "Japanese Grand Prix",
+    "Country": {
+        "Key": 4,
+        "Code": "JPN",
+        "Name": "Japan"
+    },
+    "Circuit": {
+        "Key": 46,
+        "ShortName": "Suzuka"
+    }
+}

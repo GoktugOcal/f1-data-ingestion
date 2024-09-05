@@ -14,9 +14,6 @@ class LivetimingF1Adapter:
             url=req_url,
             headers=header
             )
-        
-        return response.json, response.text
-        
 
-adapter = LivetimingF1Adapter()
-adapter.get("2023/Index.json")
+        res_text = response.content.decode('utf-8-sig')
+        return res_text

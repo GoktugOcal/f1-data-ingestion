@@ -1,6 +1,7 @@
 import requests
 import urllib
 from typing import List, Dict
+import json
 
 base_hostname = "https://livetiming.formula1.com"
 
@@ -17,3 +18,9 @@ class LivetimingF1Adapter:
 
         res_text = response.content.decode('utf-8-sig')
         return res_text
+
+def request(url):
+    adapter = LivetimingF1Adapter()
+    response = adapter.get(url)
+    data = json.loads(response)
+    return data

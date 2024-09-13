@@ -1,5 +1,6 @@
 from liveF1Wrapper.events import *
 from liveF1Wrapper.weekend import Meeting
+from liveF1Wrapper import utils
 
 # df = get_all_events(2024)
 # print(df)
@@ -28,4 +29,4 @@ for weekend_data in data["Meetings"]:
         )
 
     # print(meeting.season)
-    print(meeting.sessions)
+    print(meeting.sessions[0].get_feeds())

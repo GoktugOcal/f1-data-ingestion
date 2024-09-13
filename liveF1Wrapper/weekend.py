@@ -40,4 +40,4 @@ class Meeting: # Weekend
             self.sessions_json = self.sessions
             self.sessions = []
             for session_data in self.sessions_json:
-                self.sessions.append(liveF1Wrapper.Session(**session_data))
+                self.sessions.append(liveF1Wrapper.Session(meeting = self, **session_data))

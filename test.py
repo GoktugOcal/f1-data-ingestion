@@ -27,5 +27,5 @@ for weekend_data in data["Meetings"]:
         **weekend_data
         )
 
-    print(meeting.season)
-    print(meeting.name)
+    # print(meeting.season)
+    print(meeting.sessions)

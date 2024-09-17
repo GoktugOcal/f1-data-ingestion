@@ -6,6 +6,6 @@ class easyf1():
         year_from:int = None,
         year_to:int = None
         ):
-        
+        pass
         
 

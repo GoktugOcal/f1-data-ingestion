@@ -1,5 +1,6 @@
 from liveF1Wrapper.events import *
 from liveF1Wrapper.weekend import Meeting
+from liveF1Wrapper.season import Season
 from liveF1Wrapper import utils
 
 # df = get_all_events(2024)
@@ -13,20 +14,24 @@ from liveF1Wrapper import utils
 
 season = 2024
 
-# Create an adapter
-adapter = LivetimingF1Adapter()
+# # Create an adapter
+# adapter = LivetimingF1Adapter()
 
-# Get the data from {season_year}/Index.json
-endpoint = urllib.parse.urljoin(str(season) + "/", "Index.json")
-res_text = adapter.get(endpoint=endpoint)
+# # Get the data from {season_year}/Index.json
+# endpoint = urllib.parse.urljoin(str(season) + "/", "Index.json")
+# res_text = adapter.get(endpoint=endpoint)
 
-data = json.loads(res_text)
+# data = json.loads(res_text)
 
-for weekend_data in data["Meetings"]:
-    meeting = Meeting(
-        Season=data["Year"],
-        **weekend_data
-        )
+# for weekend_data in data["Meetings"]:
+#     meeting = Meeting(
+#         Season=data["Year"],
+#         **weekend_data
+#         )
 
-    # print(meeting.season)
-    print(meeting.sessions[0].get_feeds())
+#     # print(meeting.season)
+#     print(meeting.sessions[0].get_feeds())
+
+
+season = Season(2024)
+print(season.meetings_table)

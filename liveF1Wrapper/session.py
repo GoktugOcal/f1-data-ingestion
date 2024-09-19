@@ -16,7 +16,7 @@ class Session:
             self.get_feeds() #Get and save Feed information
 
     def get_feeds(self):
-        self.feeds_info = adapter.request(urljoin(self.full_path, "Index.json"))["Feeds"]
+        self.feeds_info = adapter.LivetimingF1Request(urljoin(self.full_path, "Index.json"))["Feeds"]
         return self.feeds_info
 
 # SessionData.json

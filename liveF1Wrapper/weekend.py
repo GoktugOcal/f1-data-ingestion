@@ -1,13 +1,24 @@
 from typing import List, Dict
 from liveF1Wrapper import (
+    utils,
     Session
 )
 
 class Meeting: # Weekend
     def __init__(
         self,
-        **kwargs
+        code:int = None,
+        key:str = None,
+        number:int = None,
+        location:str = None,
+        officialName:str = None,
+        name:str = None,
+        country:Dict = None,
+        circuit:Dict = None,
+        sessions:List = None,
+        **kwargs # In case new information comes from the API in future
         ):
+
         # Iterate over the kwargs and set them as attributes of the instance
         for key, value in kwargs.items():
             setattr(self, key.lower(), value)
@@ -17,6 +28,8 @@ class Meeting: # Weekend
             self.sessions = []
             for session_data in self.sessions_json:
                 self.sessions.append(Session(meeting = self, **session_data))
+
+        
         
     def parse_seasons(self):
         session_all_data = []

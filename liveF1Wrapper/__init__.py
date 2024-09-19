@@ -2,6 +2,14 @@ from .session import Session
 from .season import Season
 from .weekend import Meeting
 
+from .api import (
+    download_data
+)
+from .utils import *
+
+from .adapter import LivetimingF1Adapter
+
+
 class easyf1():
     def __init__(
         self,

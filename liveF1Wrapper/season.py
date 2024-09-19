@@ -1,5 +1,8 @@
-from liveF1Wrapper.adapter import LivetimingF1Adapter
-import liveF1Wrapper
+from .api import download_data
+from .weekend import Meeting
+from .utils import json_parser_for_objects, build_session_endpoint
+
+
 import urllib
 import json
 import pandas as pd
@@ -8,24 +11,17 @@ import dateutil
 class Season:
     def __init__(
         self,
-        **kwargs
+        year
         ):
-        # Iterate over the kwargs and set them as attributes of the instance
-        for key, value in kwargs.items():
+        self.year = year
+        self.load()
+
+    def load(self):
+        self.json_data = download_data(self.year)
+        for key, value in json_parser_for_objects(self.json_data).items():
             setattr(self, key.lower(), value)
         
         self.parse_meetings()
-
-        self.meetingObjs = []
-        for meeting in self.meetings:
-            self.meetingObjs.append(liveF1Wrapper.Meeting(**meeting))
-            
-    # def load(self):
-    #     adapter = LivetimingF1Adapter()
-    #     endpoint = urllib.parse.urljoin(str(self.year) + "/", "Index.json")
-    #     res_text = adapter.get(endpoint=endpoint)
-    #     self.json_data = json.loads(res_text)
-    #     self.parse_meetings()
 
     def parse_meetings(self):
         session_all_data = []
@@ -61,4 +57,4 @@ class Season:
         display(self.meetings_table)
     
     def __str__(self):
-        print(self.meetings_table)
+        return self.meetings_table.__str__()

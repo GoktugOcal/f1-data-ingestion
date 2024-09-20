@@ -1,3 +1,32 @@
+## USAGE
+
+```python
+from liveF1Wrapper as easyF1
+
+
+season = eastF1.get_season(
+    season = 2024
+)
+
+meeting = eastF1.get_meeting(
+    season = 2024,
+    location = "Monza"
+)
+
+# Session data
+session = eastF1.get_session(
+    season=2024,
+    location="Monza",
+    session="Race"
+)
+
+session.get_feeds() # load Info.json
+session_info_raw = session.load_session_info() # load sessionInfo.json or others
+
+
+```
+
+
 ## Usage Scenerios
 
 ### 1. Data Engine

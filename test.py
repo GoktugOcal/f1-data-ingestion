@@ -3,6 +3,7 @@ from liveF1Wrapper.weekend import Meeting
 from liveF1Wrapper.season import Season
 from liveF1Wrapper import utils
 from liveF1Wrapper.adapter import LivetimingF1Request
+import liveF1Wrapper
 
 # df = get_all_events(2024)
 # print(df)
@@ -49,5 +50,30 @@ from liveF1Wrapper.api import download_data
 
 # print(data)
 
-s = Season(2024)
-print(s)
+# s = Season(2024)
+# print(s.meetings[0].load(force=True))
+
+# m = Meeting(
+#     year = 2024,
+#     location = "Monza")
+# m.load()
+# m.parse_sessions()
+# print(m.sessions_table)
+
+
+# sess = m.sessions[0]
+# sess.get_feeds()
+
+# for title in sess.feeds_info.keys():
+
+#     print(title)
+
+s = liveF1Wrapper.get_session(
+    season=2024,
+    location="Monza",
+    session="Race"
+)
+
+s.get_feeds()
+
+print(s.load_car_data())

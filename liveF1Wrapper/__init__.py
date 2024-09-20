@@ -9,6 +9,11 @@ from .utils import *
 
 from .adapter import LivetimingF1Adapter
 
+from .functions import (
+    get_season,
+    get_meeting,
+    get_session
+    )
 
 class easyf1():
     def __init__(

@@ -2,19 +2,123 @@ from typing import List, Dict
 from liveF1Wrapper import adapter, utils
 from urllib.parse import urljoin
 
+from .adapter import LivetimingF1Request
+
 class Session:
     def __init__(
         self,
+        season:"Season" = None,
+        year:int = None,
+        meeting:"Meeting" = None,
+        key:int = None,
+        type:str = None,
+        number:int = None,
+        startdate:str = None,
+        enddate:str = None,
+        gmtoffset:str = None,
+        path:Dict = None,
+        loaded:bool = False,
         **kwargs
         ):
+
+        self.season = season
+        self.loaded = loaded
+        
         # Iterate over the kwargs and set them as attributes of the instance
-        for key, value in kwargs.items():
-            setattr(self, key.lower(), value)
+        for key, value in locals().items():
+            if value: setattr(self, key.lower(), value)
         
         if hasattr(self, "path"):
             self.full_path = utils.build_session_endpoint(self.path)
-            # self.get_feeds() #Get and save Feed information
 
     def get_feeds(self):
-        self.feeds_info = adapter.LivetimingF1Request(urljoin(self.full_path, "Index.json"))["Feeds"]
+        self.feeds_info = LivetimingF1Request(urljoin(self.full_path, "Index.json"))["Feeds"]
         return self.feeds_info
+    
+    # def __str__(self):
+    #     return f""
+
+    # SessionInfo
+    def load_session_info(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["SessionInfo"]["KeyFramePath"]))
+        return data
+
+    # ArchiveStatus
+    def load_archive_status(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["ArchiveStatus"]["KeyFramePath"]))
+        return data
+
+    # TrackStatus    
+    def load_track_stauts(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["TrackStatus"]["KeyFramePath"]))
+        return data
+    
+    # SessionData
+    def load_session_data(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["SessionData"]["KeyFramePath"]))
+        return data
+    
+    # ContentStreams
+    def load_content_streams(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["ContentStreams"]["KeyFramePath"]))
+        return data
+
+    # AudioStreams
+    def load_audio_streams(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["AudioStreams"]["KeyFramePath"]))
+        return data
+    
+    # ExtrapolatedClock
+    def load_extrapolated_clock(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["ExtrapolatedClock"]["KeyFramePath"]))
+        return data
+
+    # CarData.z
+    def load_car_data(self, stream=True):
+        if stream: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["CarData.z"]["StreamPath"]))
+        else: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["CarData.z"]["KeyFramePath"]))
+        return data
+    
+    # Position.z
+    def load_position(self, stream=True):
+        if stream: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["Position.z"]["StreamPath"]))
+        else: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["Position.z"]["KeyFramePath"]))
+        return data
+    
+    # TimingDataF1
+    def load_timing_data_f1(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["TimingDataF1"]["KeyFramePath"]))
+        return data
+    
+    # TimingData
+    def load_timing_data(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["TimingData"]["KeyFramePath"]))
+        return data
+    
+    # DriverList
+    def load_driver_list(self):
+        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["DriverList"]["KeyFramePath"]))
+        return data
+    
+    # def load_(self):
+    #     data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info[""]["KeyFramePath"]))
+    #     return data
+    
+    # def load_(self):
+    #     data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info[""]["KeyFramePath"]))
+    #     return data
+
+    # TyreStintSeries
+    # SessionStatus
+    # LapSeries
+    # TopThree
+    # TimingAppData
+    # TimingStats
+    # Heartbeat
+    # WeatherData
+    # WeatherDataSeries
+    # TlaRcm
+    # RaceControlMessages
+    # PitLaneTimeCollection
+    # CurrentTyres
+    # TeamRadio

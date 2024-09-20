@@ -1,47 +1,85 @@
 from typing import List, Dict
-from liveF1Wrapper import (
-    utils,
-    Session
-)
+import dateutil
+import pandas as pd
+
+from .api import download_data
+# from .season import Season
+from .session import Session
+from .utils import json_parser_for_objects, build_session_endpoint
 
 class Meeting: # Weekend
     def __init__(
         self,
+        season:"Season" = None,
+        year:int = None,
         code:int = None,
         key:str = None,
         number:int = None,
         location:str = None,
-        officialName:str = None,
+        officialname:str = None,
         name:str = None,
         country:Dict = None,
         circuit:Dict = None,
         sessions:List = None,
+        loaded:bool = False,
         **kwargs # In case new information comes from the API in future
         ):
 
+        self.season = season
+        self.loaded = loaded
+
         # Iterate over the kwargs and set them as attributes of the instance
-        for key, value in kwargs.items():
-            setattr(self, key.lower(), value)
+        for key, value in locals().items():
+            if value: setattr(self, key.lower(), value)
 
         if hasattr(self, "sessions"):
             self.sessions_json = self.sessions
             self.sessions = []
-            for session_data in self.sessions_json:
-                self.sessions.append(Session(meeting = self, **session_data))
+            self.set_sessions()
+        
+        self.parse_sessions()
+        self.set_sessions()
+        
+    def load(self, force = False):
 
+        if (not self.loaded) | (force):
+            if force: print("Force load...")
+            
+            if hasattr(self, "year"): self.json_data = download_data(self.year, self.location)
+            elif hasattr(self, "season"): self.json_data = download_data(self.season.year, self.location)
+
+            for key, value in json_parser_for_objects(self.json_data).items():
+                setattr(self, key.lower(), value)
+
+            self.sessions_json = self.sessions
+            self.sessions = []
+
+            self.parse_sessions()
+            self.set_sessions()
         
-        
-    def parse_seasons(self):
+        else:
+            print("The meeting have already been loaded. If you want to load anyway use `force=True`.")
+
+    def set_sessions(self):
+        for session_data in self.sessions_json:
+            self.sessions.append(
+                Session(
+                    meeting = self,
+                    **json_parser_for_objects(session_data)
+                    )
+                )
+
+    def parse_sessions(self):
         session_all_data = []
 
-        for session in self.sessions:
+        for session in self.sessions_json:
             session_data = {
                 "season_year" : dateutil.parser.parse(session["StartDate"]).year,
                 "meeting_code" : self.code,
                 "meeting_key" : self.key,
                 "meeting_number" : self.number,
                 "meeting_location" : self.location,
-                "meeting_offname" : self.officialName,
+                "meeting_offname" : self.officialname,
                 "meeting_name" : self.name,
                 "meeting_country_key" : self.country["Key"],
                 "meeting_country_code" : self.country["Code"],
@@ -59,3 +97,9 @@ class Meeting: # Weekend
             session_all_data.append(session_data)
 
         self.sessions_table = pd.DataFrame(session_all_data).set_index(["season_year","meeting_location","session_type"])
+
+    def __repr__(self):
+        display(self.sessions_table)
+    
+    def __str__(self):
+        return self.sessions_table.__str__()

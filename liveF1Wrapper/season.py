@@ -2,7 +2,6 @@ from .api import download_data
 from .weekend import Meeting
 from .utils import json_parser_for_objects, build_session_endpoint
 
-
 import urllib
 import json
 import pandas as pd
@@ -11,7 +10,8 @@ import dateutil
 class Season:
     def __init__(
         self,
-        year
+        year,
+        meetings
         ):
         self.year = year
         self.load()
@@ -21,12 +21,28 @@ class Season:
         for key, value in json_parser_for_objects(self.json_data).items():
             setattr(self, key.lower(), value)
         
-        self.parse_meetings()
+        self.meetings_json = self.meetings
+        self.meetings = []
 
-    def parse_meetings(self):
+        self.parse_sessions()
+        self.set_meetings()
+
+    def set_meetings(self):
+
+        self.meetings = []
+        for meeting in self.meetings_json:
+            self.meetings.append(
+                Meeting(
+                    season = self,
+                    loaded = True,
+                    **json_parser_for_objects(meeting)
+                    )
+                )
+
+    def parse_sessions(self):
         session_all_data = []
 
-        for meeting in self.meetings:
+        for meeting in self.meetings_json:
             for session in meeting["Sessions"]:
                 session_data = {
                     "season_year" : dateutil.parser.parse(session["StartDate"]).year,

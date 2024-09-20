@@ -3,6 +3,7 @@ from liveF1Wrapper import adapter, utils
 from urllib.parse import urljoin
 
 from .adapter import LivetimingF1Request
+from .utils import get_car_data_stream
 
 class Session:
     def __init__(
@@ -75,8 +76,11 @@ class Session:
 
     # CarData.z
     def load_car_data(self, stream=True):
-        if stream: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["CarData.z"]["StreamPath"]))
-        else: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["CarData.z"]["KeyFramePath"]))
+        # if stream: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["CarData.z"]["StreamPath"]))
+        # else: data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["CarData.z"]["KeyFramePath"]))
+        if stream: data = get_car_data_stream(urljoin(self.full_path, self.feeds_info["CarData.z"]["StreamPath"]))
+        else: data = get_car_data_stream(urljoin(self.full_path, self.feeds_info["CarData.z"]["KeyFramePath"]))
+        
         return data
     
     # Position.z

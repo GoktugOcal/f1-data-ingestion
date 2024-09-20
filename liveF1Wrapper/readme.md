@@ -22,7 +22,7 @@ session = eastF1.get_session(
 
 session.get_feeds() # load Info.json
 session_info_raw = session.load_session_info() # load sessionInfo.json or others
-
+session_car_data_raw = session.load_car_data() # load carData.z or others
 
 ```
 

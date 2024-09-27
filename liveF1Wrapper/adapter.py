@@ -24,3 +24,15 @@ def LivetimingF1Request(url):
     response = adapter.get(url)
     data = json.loads(response)
     return data
+
+def LivetimingF1GetData(url, stream):
+    adapter = LivetimingF1Adapter()
+    res_text = adapter.get(endpoint=url)
+
+    if stream:
+        records = res_text.split('\r\n')[:-1]
+        tl = 12
+        return dict((r[:tl], json.loads(r[tl:])) for r in records)
+    else:
+        records = json.loads(res_text)
+        return records

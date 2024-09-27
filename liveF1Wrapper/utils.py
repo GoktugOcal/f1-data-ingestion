@@ -22,6 +22,20 @@ def json_parser_for_objects(data:Dict) -> Dict:
 
 ############333
 
+def get_data(path, stream):
+    adapter = LivetimingF1Adapter()
+    endpoint = path
+    res_text = adapter.get(endpoint=endpoint)
+
+    if stream:
+        records = res_text.split('\r\n')[:-1]
+        tl = 12
+        return dict((r[:tl], r[tl:]) for r in records)
+    else:
+        records = res_text
+        return records
+
+
 def get_car_data_stream(path):
     adapter = LivetimingF1Adapter()
     endpoint = path

@@ -40,6 +40,7 @@ class Session:
     #     return f""
 
     # SessionInfo
+    # this data is static, stream is not needed
     def load_session_info(self):
         data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["SessionInfo"]["KeyFramePath"]))
         return data

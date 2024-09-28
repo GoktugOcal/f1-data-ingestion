@@ -2,8 +2,9 @@ from typing import List, Dict
 from liveF1Wrapper import adapter, utils
 from urllib.parse import urljoin
 
-from .adapter import LivetimingF1Request
+from .adapter import LivetimingF1Request, LivetimingF1GetData
 from .utils import get_car_data_stream
+from .etl import *
 
 class Session:
     def __init__(
@@ -101,19 +102,37 @@ class Session:
         return data
     
     # DriverList
+    # this data is static, stream is not needed
     def load_driver_list(self):
-        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["DriverList"]["KeyFramePath"]))
-        return data
-    
-    # def load_(self):
-    #     data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info[""]["KeyFramePath"]))
-    #     return data
-    
-    # def load_(self):
-    #     data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info[""]["KeyFramePath"]))
-    #     return data
+        data = LivetimingF1GetData(
+            urljoin(self.full_path, self.feeds_info["DriverList"]["KeyFramePath"]),
+            stream=False
+            )
+        return list(parse_driver_list(
+            data=data
+            ))
 
     # TyreStintSeries
+    def load_tyre_stint_series(self):
+        data = LivetimingF1GetData(
+            urljoin(self.full_path, self.feeds_info["TyreStintSeries"]["StreamPath"]),
+            stream=True
+            )
+        return list(parse_tyre_stint_series(
+            data=data
+            ))
+    
+    # DriverRaceInfo
+    def load_driver_race_info(self):
+        data = LivetimingF1GetData(
+            urljoin(self.full_path, self.feeds_info["DriverRaceInfo"]["StreamPath"]),
+            stream=True
+            )
+        return list(parse_driver_race_info(
+            data=data
+            ))
+
+
     # SessionStatus
     # LapSeries
     # TopThree
@@ -126,4 +145,13 @@ class Session:
     # RaceControlMessages
     # PitLaneTimeCollection
     # CurrentTyres
+    def load_current_tyres(self):
+        data = LivetimingF1GetData(
+            urljoin(self.full_path, self.feeds_info["CurrentTyres"]["StreamPath"]),
+            stream=True
+            )
+        return list(parse_current_tyres(
+            data=data
+            ))
+
     # TeamRadio

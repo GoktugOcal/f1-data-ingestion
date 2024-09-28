@@ -16,4 +16,4 @@ s = liveF1Wrapper.get_session(
 s.get_feeds()
 
 # print(s.load_car_data())
-print(s.full_path)
+print(s.load_driver_list())

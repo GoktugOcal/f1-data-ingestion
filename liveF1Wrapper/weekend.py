@@ -98,8 +98,8 @@ class Meeting: # Weekend
 
         self.sessions_table = pd.DataFrame(session_all_data).set_index(["season_year","meeting_location","session_type"])
 
-    def __repr__(self):
-        display(self.sessions_table)
+    # def __repr__(self):
+    #     display(self.sessions_table)
     
-    def __str__(self):
-        return self.sessions_table.__str__()
+    # def __str__(self):
+    #     return self.sessions_table.__str__()

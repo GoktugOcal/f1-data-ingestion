@@ -13,6 +13,7 @@ class Session:
         year:int = None,
         meeting:"Meeting" = None,
         key:int = None,
+        name:str = None,
         type:str = None,
         number:int = None,
         startdate:str = None,
@@ -25,6 +26,7 @@ class Session:
 
         self.season = season
         self.loaded = loaded
+        self.etl_parser = easyF1_sessionETL(session = self)
         
         # Iterate over the kwargs and set them as attributes of the instance
         for key, value in locals().items():
@@ -33,9 +35,29 @@ class Session:
         if hasattr(self, "path"):
             self.full_path = utils.build_session_endpoint(self.path)
 
+    # def load_meeting(self):
+    #     get_meeting(
+    #         season = self.year,
+    #         location = self.
+    #         )
+
     def get_feeds(self):
         self.feeds_info = LivetimingF1Request(urljoin(self.full_path, "Index.json"))["Feeds"]
         return self.feeds_info
+
+    
+    def get_data(self, dataName, dataType, stream):
+        data = LivetimingF1GetData(
+            urljoin(self.full_path, self.feeds_info[dataName][dataType]),
+            stream=stream
+            )
+        
+        return list(self.etl_parser.unifiedParse(
+            dataName,
+            data
+        ))
+
+
     
     # def __str__(self):
     #     return f""
@@ -58,8 +80,15 @@ class Session:
     
     # SessionData
     def load_session_data(self):
-        data = LivetimingF1Request(urljoin(self.full_path, self.feeds_info["SessionData"]["KeyFramePath"]))
-        return data
+        data = LivetimingF1GetData(
+            urljoin(self.full_path, self.feeds_info["SessionData"]["StreamPath"]),
+            stream=True
+            )
+        
+        return list(parse_session_data(
+            data=data,
+            session_key = self.key
+        ))
     
     # ContentStreams
     def load_content_streams(self):
@@ -109,7 +138,8 @@ class Session:
             stream=False
             )
         return list(parse_driver_list(
-            data=data
+            data=data,
+            session_key = self.key
             ))
 
     # TyreStintSeries
@@ -118,9 +148,11 @@ class Session:
             urljoin(self.full_path, self.feeds_info["TyreStintSeries"]["StreamPath"]),
             stream=True
             )
-        return list(parse_tyre_stint_series(
-            data=data
-            ))
+
+        return list(self.etl_parser.unifiedParse(
+            "TyreStintSeries",
+            data
+        ))
     
     # DriverRaceInfo
     def load_driver_race_info(self):
@@ -129,7 +161,8 @@ class Session:
             stream=True
             )
         return list(parse_driver_race_info(
-            data=data
+            data=data,
+            session_key = self.key
             ))
 
 
@@ -151,7 +184,8 @@ class Session:
             stream=True
             )
         return list(parse_current_tyres(
-            data=data
+            data=data,
+            session_key = self.key
             ))
 
     # TeamRadio

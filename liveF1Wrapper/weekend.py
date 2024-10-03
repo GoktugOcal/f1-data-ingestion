@@ -38,7 +38,7 @@ class Meeting: # Weekend
             self.set_sessions()
         
         self.parse_sessions()
-        self.set_sessions()
+        # self.set_sessions()
         
     def load(self, force = False):
 
@@ -64,6 +64,7 @@ class Meeting: # Weekend
         for session_data in self.sessions_json:
             self.sessions.append(
                 Session(
+                    season = self.season,
                     meeting = self,
                     **json_parser_for_objects(session_data)
                     )

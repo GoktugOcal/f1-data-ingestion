@@ -34,11 +34,19 @@ def get_session(
     session:str = None,
     session_no:int = None
     ):
-    session_data = download_data(
-        season_identifier=season,
-        location_identifier=location,
-        session_identifier=session)
-    return Session(**json_parser_for_objects(session_data))
+    session_name = session
+    # session_data = download_data(
+    #     season_identifier=season,
+    #     location_identifier=location,
+    #     session_identifier=session)
+
+    # return Session(**json_parser_for_objects(session_data))
+
+    season = get_season(season=season)
+    meeting = [meeting for meeting in season.meetings if meeting.location == location][0]
+    session = [session for session in meeting.sessions if session.name == session_name][0]
+    return session
+
 
 def get_race():
     pass

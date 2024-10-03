@@ -6,6 +6,7 @@ from liveF1Wrapper.adapter import LivetimingF1Request
 import liveF1Wrapper
 
 from liveF1Wrapper.api import download_data
+import pandas as pd
 
 s = liveF1Wrapper.get_session(
     season=2024,
@@ -16,4 +17,10 @@ s = liveF1Wrapper.get_session(
 s.get_feeds()
 
 # print(s.load_car_data())
-print(s.load_driver_list())
+# print(s.load_driver_list())
+
+print(pd.DataFrame(s.get_data(
+    dataName = "SessionData",
+    dataType = "StreamPath",
+    stream = True
+)))

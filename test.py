@@ -20,7 +20,7 @@ s.get_feeds()
 # print(s.load_driver_list())
 
 print(pd.DataFrame(s.get_data(
-    dataName = "SessionData",
+    dataName = "TimingDataF1",
     dataType = "StreamPath",
     stream = True
 )))

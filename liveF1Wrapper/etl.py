@@ -22,9 +22,9 @@ class easyF1_sessionETL:
             'SessionData': parse_session_data,
             'ContentStreams': None,
             'AudioStreams': None,
-            'ExtrapolatedClock': None,
-            'DriverList': None,
-            'TimingDataF1': None,
+            'ExtrapolatedClock': parse_extrapolated_clock,
+            'DriverList': parse_driver_list,
+            'TimingDataF1': parse_timing_data,
             'TimingData': None,
             'LapSeries': None,
             'TopThree': None,
@@ -41,7 +41,8 @@ class easyF1_sessionETL:
             'TlaRcm': None,
             'RaceControlMessages': None,
             'PitLaneTimeCollection': None,
-            'CurrentTyres': None
+            'CurrentTyres': parse_current_tyres,
+            'DriverRaceInfo': parse_driver_race_info
             }
 
     def unifiedParse(self, title, data):
@@ -89,7 +90,6 @@ def parse_driver_race_info(
             }
             
             yield record
-
 
 def parse_current_tyres(
     data,
@@ -140,7 +140,6 @@ def parse_session_data(
             except Exception as e:
                 pass
 
-
 def parse_extrapolated_clock(
     data,
     session_key
@@ -155,6 +154,54 @@ def parse_extrapolated_clock(
         }
         yield record
 
+def parse_timing_data(
+    data,
+    sessionKey
+    ):
+    def parse_helper(info, record, prefix=""):
+        for info_k, info_v in info.items():
+
+            if isinstance(info_v, list):
+                record = {
+                    **record,
+                    **{
+                        **{info_k + "_" + str(sector_no+1) + "_" + k : v  for sector_no in range(len(info_v)) for k,v in info_v[sector_no].items()}
+                    }
+                }
+
+            elif isinstance(info_v, dict):
+                record = parse_helper(info_v, record, prefix= prefix + info_k + "_")
+                # record = {
+                #     **record,
+                #     **{
+                #         info_k + "_" + k : v for k,v in info_v.items()
+                #     }
+                # }
+
+            else:
+                record = {
+                    **record,
+                    **{
+                        prefix + info_k : info_v 
+                    }
+                }
+        
+        return record
+
+    for ts, value in data.items():
+        if "Withheld" in value.keys(): withTheId = value["Withheld"]
+        else: withTheId = None
+        
+        for driver_no, info in value["Lines"].items():
+            record= {
+                    "SessionKey" : sessionKey,
+                    "timestamp" : ts,
+                    "DriverNo" : driver_no
+                }
+
+            record = parse_helper(info, record)
+
+            yield record
 
 
 

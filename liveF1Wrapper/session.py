@@ -52,10 +52,9 @@ class Session:
             stream=stream
             )
         
-        return list(self.etl_parser.unifiedParse(
-            dataName,
-            data
-        ))
+        return basicResult(
+            data = list(self.etl_parser.unifiedParse(dataName,data))
+            )
 
 
     

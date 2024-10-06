@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 from typing import (
     Optional,
     Union
@@ -10,6 +11,19 @@ def parse_car_data(data:json):
 
 def session():
     pass
+
+class basicResult:
+    def __init__(
+        self,
+        data:json
+        ):
+        self.value = data
+
+    def __get__(self):
+        return self.value
+    
+    def __str__(self):
+        return pd.DataFrame(self.value).__str__()
 
 
 class easyF1_sessionETL:
@@ -25,9 +39,9 @@ class easyF1_sessionETL:
             'ExtrapolatedClock': parse_extrapolated_clock,
             'DriverList': parse_driver_list,
             'TimingDataF1': parse_timing_data,
-            'TimingData': None,
-            'LapSeries': None,
-            'TopThree': None,
+            'TimingData': parse_timing_data, # what is the difference with timingdataf1
+            'LapSeries': parse_lap_series,
+            'TopThree': parse_top_three,
             'TimingAppData': None,
             'TimingStats': None,
             'SessionStatus': None,
@@ -56,7 +70,7 @@ class easyF1_sessionETL:
 
 def parse_tyre_stint_series(
     data,
-    session_key
+    sessionKey
     ):
     for key, value in data.items():
         for driver_no, stint in value["Stints"].items():
@@ -64,7 +78,7 @@ def parse_tyre_stint_series(
                 for pit_count, current_info in stint.items():
                     record = {
                         **{
-                            "session_key": session_key,
+                            "session_key": sessionKey,
                             "timestamp": key,
                             "DriverNo": driver_no,
                             "PitCount": pit_count,
@@ -76,13 +90,13 @@ def parse_tyre_stint_series(
 
 def parse_driver_race_info(
     data,
-    session_key
+    sessionKey
     ):
     for key, value in data.items():
         for driver_no, info in value.items():
             record = {
                 **{
-                    "session_key": session_key,
+                    "session_key": sessionKey,
                     "timestamp": key,
                     "DriverNo": driver_no,
                 },
@@ -93,13 +107,13 @@ def parse_driver_race_info(
 
 def parse_current_tyres(
     data,
-    session_key
+    sessionKey
     ):
     for key, value in data.items():
         for driver_no, info in value["Tyres"].items():
             record = {
                 **{
-                    "session_key": session_key,
+                    "session_key": sessionKey,
                     "timestamp": key,
                     "DriverNo": driver_no,
                 },
@@ -109,12 +123,12 @@ def parse_current_tyres(
 
 def parse_driver_list(
     data,
-    session_key
+    sessionKey
     ):
     for driver_no, info in data.items():
         record = {
             **{ 
-                "session_key" : session_key,
+                "session_key" : sessionKey,
                 "DriverNo": driver_no,
             },
             **info
@@ -124,14 +138,14 @@ def parse_driver_list(
 
 def parse_session_data(
     data,
-    session_key
+    sessionKey
     ):
     for key, value in data.items():
         for driver_no, info in value.items():
             try:
                 record = {
                     **{
-                        "session_key" : session_key
+                        "session_key" : sessionKey
                     },
                     **list(info.values())[0]
                 }
@@ -142,12 +156,12 @@ def parse_session_data(
 
 def parse_extrapolated_clock(
     data,
-    session_key
+    sessionKey
     ):
     for key, info in data.items():
         record = {
             **{
-                "session_key": session_key,
+                "session_key": sessionKey,
                 "timestamp": key,
             },
             **info
@@ -203,12 +217,55 @@ def parse_timing_data(
 
             yield record
 
+def parse_lap_series(
+    data,
+    sessionKey
+    ):
+    for ts, ts_value in data.items():
+        for driver_no, driver_data in ts_value.items():
+            if isinstance(driver_data["LapPosition"], list):
+                for position in driver_data["LapPosition"]:
+                    record = {
+                            "SessionKey" : sessionKey,
+                            "timestamp" : ts,
+                            "DriverNo" : driver_no,
+                            "Lap" : 0,
+                            "LapPosition" : position
+                        }
+                    yield record
+                
+            
+            elif isinstance(driver_data["LapPosition"], dict):
+                for lap, position in driver_data["LapPosition"].items():
+                    record = {
+                            "SessionKey" : SessionKey,
+                            "timestamp" : ts,
+                            "DriverNo" : driver_no,
+                            "Lap" : lap,
+                            "LapPosition" : position
+                        }
+                    yield record
 
 
+def parse_top_three(
+    data,
+    sessionKey
+    ):
+    for ts, ts_value in data.items():
+        if "Withheld" in ts_value.keys():
+            continue
 
+        for position, info in ts_value["Lines"].items():
 
-
-
+            record = {
+                **{
+                    "SessionKey" : sessionKey,
+                    "timestamp" : ts,
+                    "DriverAtPosition" : position
+                },
+                **info
+            }
+            yield record
 
 def parse(text: str, zipped: bool = False) -> Union[str, dict]:
     """

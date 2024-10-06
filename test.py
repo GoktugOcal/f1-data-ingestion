@@ -19,8 +19,10 @@ s.get_feeds()
 # print(s.load_car_data())
 # print(s.load_driver_list())
 
-print(pd.DataFrame(s.get_data(
-    dataName = "TimingDataF1",
+df = s.get_data(
+    dataName = "TopThree",
     dataType = "StreamPath",
     stream = True
-)))
+)
+
+print(df)

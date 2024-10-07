@@ -43,12 +43,12 @@ class easyF1_sessionETL:
             'LapSeries': parse_lap_series,
             'TopThree': parse_top_three,
             'TimingAppData': None,
-            'TimingStats': None,
-            'SessionStatus': None,
+            'TimingStats': parse_timing_data, # what is the difference with timingdataf1
+            'SessionStatus': parse_session_status,
             'TyreStintSeries': parse_tyre_stint_series,
-            'Heartbeat': None,
+            'Heartbeat': parse_hearthbeat,
             'Position.z': None,
-            'WeatherData': None,
+            'WeatherData': parse_weather_data,
             'WeatherDataSeries': None,
             'CarData.z': None,
             'TeamRadio': None,
@@ -174,32 +174,9 @@ def parse_timing_data(
     ):
     def parse_helper(info, record, prefix=""):
         for info_k, info_v in info.items():
-
-            if isinstance(info_v, list):
-                record = {
-                    **record,
-                    **{
-                        **{info_k + "_" + str(sector_no+1) + "_" + k : v  for sector_no in range(len(info_v)) for k,v in info_v[sector_no].items()}
-                    }
-                }
-
-            elif isinstance(info_v, dict):
-                record = parse_helper(info_v, record, prefix= prefix + info_k + "_")
-                # record = {
-                #     **record,
-                #     **{
-                #         info_k + "_" + k : v for k,v in info_v.items()
-                #     }
-                # }
-
-            else:
-                record = {
-                    **record,
-                    **{
-                        prefix + info_k : info_v 
-                    }
-                }
-        
+            if isinstance(info_v, list): record = {**record, **{**{info_k + "_" + str(sector_no+1) + "_" + k : v  for sector_no in range(len(info_v)) for k,v in info_v[sector_no].items()}}}
+            elif isinstance(info_v, dict): record = parse_helper(info_v, record, prefix= prefix + info_k + "_")
+            else: record = {**record, **{prefix + info_k : info_v}}
         return record
 
     for ts, value in data.items():
@@ -266,6 +243,45 @@ def parse_top_three(
                 **info
             }
             yield record
+    
+def parse_session_status(
+    data,
+    sessionKey
+    ):
+    for ts, ts_value in data.items():
+        record = {
+            "SessionKey": sessionKey,
+            "timestamp": ts,
+            "status": ts_value["Status"]
+        }
+        yield record
+
+def parse_hearthbeat(
+    data,
+    sessionKey
+    ):
+    for ts, ts_value in data.items():
+        record = {
+            "SessionKey": sessionKey,
+            "timestamp": ts,
+            "utc": ts_value["Utc"]
+        }
+        yield record
+
+def parse_weather_data(
+    data,
+    sessionKey
+    ):
+    for ts, ts_value in data.items():
+        record = {
+            "SessionKey": sessionKey,
+            "timestamp": ts
+        }
+        record = {
+            **record,
+            **ts_value
+        }
+        yield record
 
 def parse(text: str, zipped: bool = False) -> Union[str, dict]:
     """

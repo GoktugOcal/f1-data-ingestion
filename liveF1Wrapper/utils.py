@@ -6,6 +6,7 @@ import base64
 import collections
 import datetime
 import zlib
+import json
 from typing import (
     Optional,
     Union
@@ -63,3 +64,14 @@ def parse(text: str, zipped: bool = False) -> Union[str, dict]:
 def parse_hash(hash_code):
     tl=12
     return parse(hash_code, zipped=True)
+
+
+
+
+
+def parse_helper_for_nested_dict(info, record, prefix=""):
+    for info_k, info_v in info.items():
+        if isinstance(info_v, list): record = {**record, **{**{info_k + "_" + str(sector_no+1) + "_" + k : v  for sector_no in range(len(info_v)) for k,v in info_v[sector_no].items()}}}
+        elif isinstance(info_v, dict): record = parse_helper(info_v, record, prefix= prefix + info_k + "_")
+        else: record = {**record, **{prefix + info_k : info_v}}
+    return record

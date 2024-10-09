@@ -8,6 +8,8 @@ import liveF1Wrapper
 from liveF1Wrapper.api import download_data
 import pandas as pd
 
+import json
+
 s = liveF1Wrapper.get_session(
     season=2024,
     location="Monza",
@@ -15,14 +17,17 @@ s = liveF1Wrapper.get_session(
 )
 
 s.get_feeds()
+# print(json.dumps(s.feeds_info, indent=2))
 
 # print(s.load_car_data())
 # print(s.load_driver_list())
 
 df = s.get_data(
-    dataName = "CarData.z",
+    dataName = "Position.z",
     dataType = "StreamPath",
     stream = True
 )
 
-print(df)
+print(type(df))
+for line in df.value[:10]:
+    print(line)

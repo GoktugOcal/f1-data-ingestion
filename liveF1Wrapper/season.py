@@ -69,8 +69,8 @@ class Season:
 
         self.meetings_table = pd.DataFrame(session_all_data).set_index(["season_year","meeting_location","session_type"])
 
-    # def __repr__(self):
-    #     display(self.meetings_table)
+    def __repr__(self):
+        display(self.meetings_table)
     
-    # def __str__(self):
-    #     return self.meetings_table.__str__()
+    def __str__(self):
+        return self.meetings_table.__str__()

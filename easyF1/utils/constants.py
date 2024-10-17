@@ -1,4 +1,3 @@
-
 # Default API URL and endpoints
 BASE_URL = "https://livetiming.formula1.com"
 STATIC_ENDPOINT = "/static/"

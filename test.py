@@ -1,26 +1,13 @@
-from liveF1Wrapper.events import *
-from liveF1Wrapper.weekend import Meeting
-from liveF1Wrapper.season import Season
-from liveF1Wrapper import utils
-from liveF1Wrapper.adapter import LivetimingF1Request
-import liveF1Wrapper
+import easyF1
 
-from liveF1Wrapper.api import download_data
-import pandas as pd
-
-import json
-
-s = liveF1Wrapper.get_session(
+s = easyF1.get_session(
     season=2024,
     location="Monza",
     session="Race"
 )
 
-s.get_feeds()
-# print(json.dumps(s.feeds_info, indent=2))
 
-# print(s.load_car_data())
-# print(s.load_driver_list())
+s.get_feeds()
 
 df = s.get_data(
     dataName = "Position.z",
@@ -28,6 +15,14 @@ df = s.get_data(
     stream = True
 )
 
-print(type(df))
-for line in df.value[:10]:
-    print(line)
+print(df)
+
+# print(type(df))
+# for line in df.value[:10]:
+#     print(line)
+
+
+# easyF1.download_data(
+#     season_identifier=2024,
+#     location_identifier="Monaza"
+# )

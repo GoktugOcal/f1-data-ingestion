@@ -4,33 +4,12 @@ from typing import (
     Optional,
     Union
 )
-from .utils import *
+from easyF1.utils.helper import *
 
-def parse_car_data(data:json):
-
-    return json, csv, pandas
-
-def session():
-    pass
-
-class basicResult:
-    def __init__(
-        self,
-        data:json
-        ):
-        self.value = data
-
-    def __get__(self):
-        return self.value
-    
-    def __str__(self):
-        return pd.DataFrame(self.value).__str__()
-
-
-class easyF1_sessionETL:
+class easyF1SessionETL:
     def __init__(self, session):
         self.session = session
-        self.functionMap = {
+        self.function_map = {
             'SessionInfo': parse_session_info,
             'ArchiveStatus': None,
             'TrackStatus': parse_session_info,
@@ -60,14 +39,11 @@ class easyF1_sessionETL:
             'DriverRaceInfo': parse_driver_race_info
             }
 
-    def unifiedParse(self, title, data):
-        return self.functionMap[title](
+    def unified_parse(self, title, data):
+        return self.function_map[title](
             data,
             self.session.key
             )
-
-
-
 
 def parse_tyre_stint_series(
     data,
@@ -223,7 +199,6 @@ def parse_lap_series(
                             "LapPosition" : position
                         }
                     yield record
-
 
 def parse_top_three(
     data,
@@ -408,22 +383,3 @@ def parse_car_data_z(
                     }
                 
                 yield record
-
-
-# def parse(text: str, zipped: bool = False) -> Union[str, dict]:
-#     """
-#     FastF1 code
-#     """
-#     if text[0] == '{':
-#         return json.loads(text)
-#     if text[0] == '"':
-#         text = text.strip('"')
-#     if zipped:
-#         text = zlib.decompress(base64.b64decode(text), -zlib.MAX_WBITS)
-#         return parse(text.decode('utf-8-sig'))
-#     # _logger.warning("Couldn't parse text")
-#     return text
-
-# def parse_hash(hash_code):
-#     tl=12
-#     return parse(hash_code, zipped=True)

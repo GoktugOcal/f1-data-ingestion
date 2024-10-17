@@ -6,7 +6,7 @@
 
 #### Import the library
 ```python
-from liveF1Wrapper as easyF1
+from easyF1 as easyF1
 ```
 
 #### Get season object and its meetings + sessions
@@ -71,7 +71,7 @@ data = session.get_data(
 )
 
 print(type(data))
-# <class 'liveF1Wrapper.etl.basicResult'>
+# <class 'easyF1.data_processing.data_models.BasicResult'>
 
 print(data)
 #     SessionKey     timestamp                           Utc DriverNo   Status     X      Y     Z

@@ -36,7 +36,9 @@ class SignalRClient:
             customize logging, you can pass an instance of
             :class:`logging.Logger` (see: :mod:`logging`).
     """
-    _connection_url = 'https://livetiming.formula1.com/signalr'
+    # _connection_url = 'https://livetiming.formula1.com/signalr'
+    # _connection_url = 'wss://stream.binance.com:9443/ws/btcusdt@trade'
+    _connection_url = 'https://neptune-signalr.azurewebsites.net/hub/neptunehub/signalr'
 
     def __init__(self, filename: str, filemode: str = 'w', debug: bool = False,
                  timeout: int = 60, logger: Optional = None, topics: list = ["CarData.z"]):

@@ -69,7 +69,7 @@ if __name__ == "__main__":
                     'Accept-Encoding': 'gzip, identity',
                     'Connection': 'keep-alive, Upgrade'}
     # connection = Connection('https://livetiming.formula1.com/signalr', session=sess)
-    connection = Connection('https://signalrasp.azurewebsites.net/raw-connection', session=None)
+    connection = Connection('https://signalrasp.azurewebsites.net/streaming-connection', session=None)
 
     # Register hub
     hub = connection.register_hub('Streaming')
@@ -81,9 +81,9 @@ if __name__ == "__main__":
     connection.error += on_error
 
     # Assign hub message handler
-    hub.client.on('uE', print)
-    hub.client.on('uS', print)
-    hub.client.on('feed', print)
+    hub.client.on('M', print)
+    # hub.client.on('uS', print)
+    # hub.client.on('feed', print)
 
     # # Send a message
     # hub.server.invoke('SubscribeToExchangeDeltas', 'BTC-ETH')
